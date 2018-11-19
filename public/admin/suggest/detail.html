@@ -1,0 +1,19 @@
+<div class="suggest-detail clearfix" ng-controller="FeedbackCtrl">
+    <h3>意见反馈</h3>
+    <div class="pull-left">
+        <!--<h4>意见反馈类型</h4>-->
+        <ul class="suggest-types">
+            <li ng-repeat="type in suggest.types">{{type}}</li>
+        </ul>
+        <!--<h4>内容：</h4>-->
+        <p class="suggest-content" ng-bind-html="suggest.suggest"></p>
+    </div>
+    <div class="pull-right">
+        <!--<h4>反馈者</h4>-->
+        <a ui-sref="app.blogger.detail({id: suggest.blogger.id})" class="active" title="{{suggest.blogger.nickname}}">
+            <img ng-src="{{suggest.blogger.photo}}" alt="{{suggest.blogger.nickname}}" class="thumb">
+            <h5>{{suggest.blogger.nickname}}</h5>
+        </a>
+        <p class="text-center" ng-bind="suggest.published.substring(0, 19).replace('T', ' ')"></p>
+    </div>
+</div>

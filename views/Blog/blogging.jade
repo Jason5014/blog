@@ -1,0 +1,56 @@
+extends ../layout
+block append links
+    link(rel='stylesheet' href='/bower_components/editor.md/css/editormd.css')
+block append scripts
+    script(type='text/javascript' src='/bower_components/editor.md/editormd.js')
+    script(type='text/javascript' src='/bower_components/layer/src/layer.js')
+    script(type='text/javascript' src='/js/app.user.js')
+block content
+    include ../header
+    div(ng-controller='BloggingCtrl')
+        .content-wrap
+            .clearfix
+                //h.pull-left 写博客
+                div.btn-group.btn-group-sm.pull-right
+                    a.btn.btn-success(ng-click='publish()' ng-if='blog.status === 0') 发布博客
+                    a.btn.btn-primary(ng-click='save()' ng-show='id === "new"') 保存文章
+                    a.btn.btn-primary(ng-click='edit()' ng-hide='id === "new"') 保存修改
+                    a.btn.btn-danger(ng-click='cancel()') 取消
+            h3: input.editor-title(ng-model='blog.title' ng-change='editTitle()')
+            span.font-warn.pull-right (限制长度30个字符)
+            div
+                input(type='checkbox' ng-model='blog.visible')
+                span.text-success.font-bold  私密文章
+            div.publish-blog
+                div
+                    label 博客分类：
+                    select(ng-model="blog.category" class="form-control")
+                        option(value='0') 选择分类
+                        each item in categorys
+                            option(value="#{item.name}") #{item.name}
+                div
+                    label 个人分类：
+                    ul.custom-category#customCategoryList
+                        if customCategorys.length === 0
+                            li 暂无分类
+                        each item in customCategorys
+                            li
+                                input(type='checkbox' name='sorts' value="#{item._id}")
+                                | #{item.name}
+                div
+                    label
+                        | 文章标签：
+                        span.font-notice (最多5个)
+                    ul#labels
+                        li(ng-repeat='item in blog.labels')
+                            input(type='text' value='{{item}}' ng-blur='editLabel($event.target, item)')
+                            a(ng-click='removeLabel($event.target)' title='删除')
+                                i.glyphicon.glyphicon-remove
+                    a.btn.btn-link(ng-click="addLabel()" ng-hide='blog.labels.length > 4')
+                        i.glyphicon.glyphicon-plus-sign
+                        |  添加标签
+
+
+        div#blog-editor
+            textarea(style='display:none' ng-value='blog.content')
+        hr

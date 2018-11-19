@@ -1,0 +1,32 @@
+nav.navbar.navbar-default
+    .container-fluid
+        .navbar-header
+            a.navbar-brand(href='/' style='margin: 0; padding: 0;')
+                img.user-photo(src='/images/logo.jpg')
+        ul.nav.navbar-nav
+            li: a(href='/') 首页
+            li: a(href='/ranking') 排行榜
+            if user
+                li: a(href='/blog/#{user.id}') 我的博客
+        div.user-controller
+            if user
+                //用户已登录时显示
+                ul.nav.navbar-nav.navbar-right
+                    li: img.user-photo(title='#{user.nickname}' src= '#{user.photo}' alt='#{user.nickname}')
+                    li.dropdown
+                        a.dropdown-toggle.one-line.user-name(href='#' data-toggle='dropdown') #{user.nickname}
+                        ul.dropdown-menu.arrow
+                            li: a(href='/user/userinfo') 主页
+                            li: a(href='/user/blogmanager') 管理
+                            li: a(href='/user/feedback') 反馈
+                            li: a(ng-click='quit()') 退出
+            else
+                // 用户未登录时显示
+                div.nav.navbar-nav.navbar-right.user-not-logged-in
+                    a.navbar-brand(href='/login' title='登录') 登录
+                    span.navbar-brand /
+                    a.navbar-brand(href='/register' title='注册') 注册
+            form.navbar-form.navbar-right.icon-margin(action='/search')
+                .form-group
+                    input.form-control(placeholder='文章搜索' style='padding-right: 30px;' name='q' required)
+                    button.btn.btn-search(type='submit'): i.fa.fa-search(title='搜索')

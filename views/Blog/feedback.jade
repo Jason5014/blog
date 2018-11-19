@@ -1,0 +1,35 @@
+extends ../layout
+block append scripts
+    script(type='text/javascript' src='/js/app.user.js')
+block content
+    include ../header
+
+    .content-wrap.clearfix(ng-style='style(57)' resize)
+        form.feedback-form.pull-left(ng-controller='FeedbackCtrl' ng-submit='submit()')
+            h3.form-heading 意见反馈
+            .form-group
+                h5.item-label 问题类型：
+                .span-type-wrap(ng-click='checkSpan($event)')
+                    span.span-type 页面设计
+                    span.span-type 功能设计
+                    span.span-type 文章设计
+                    span.span-type 系统设计
+            .form-group
+                h5.item-label 个人建议或意见：
+                textarea.form-control(rows=5, onresize, ng-model='feedback.suggest', ng-change='editSuggest()')
+                p.text-right
+                    | 还能输入
+                    span.text-danger(ng-bind='wordsLimit')
+                    | 个字符
+            .form-group
+                button.btn.btn-success.pull-right(type='submit') 提交
+        .feedback-explain.box-border.pull-right
+            h3.form-heading 意见反馈说明
+            p.explain-content.
+                反馈您在博客遇到的问题，也可以提出你对博客的意见或建议。
+            dl
+                dt 注意：
+                dd.
+                    1.遇到博客的问题时，为了让我们更好地帮宁解决问题，可以附上您的博客地址，如有截图也一并附上。
+
+    include ../footer

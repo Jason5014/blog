@@ -1,0 +1,158 @@
+extends ../layout.jade
+
+block append links
+    link(rel='stylesheet' href='/bower_components/cropper/dist/cropper.css')
+    link(rel='stylesheet' href='/plugins/sitelogo/sitelogo.css')
+    link(rel='stylesheet' href='/css/tab.css')
+
+block append scripts
+    script(type='text/javascript' src='/plugins/canvas-to-blob/canvas-to-blob.js')
+    script(type='text/javascript' src='/bower_components/cropper/dist/cropper.js')
+    script(type='text/javascript' src='/plugins/sitelogo/sitelogo.js')
+    script(type='text/javascript' src='/js/app.user.js')
+block content
+    include ../header
+    .content-wrap(ng-controller='UserInfoCtrl' resize ng-style='style(75, true)')
+        .user-info.clearfix.box-border
+            a.user-info-edit.pull-right.arrow(ng-click='editInfo("#{blogger._id}")' title='编辑信息' style='font-size: 2em;'): i.fa.fa-edit
+            .user-info-left.pull-left
+                input#blogger(type='hidden' blogger='#{blogger._id}')
+                .user-photo-wrap#crop-avatar
+                    div.avatar-view.user-info-photo-container(title='修改头像')
+                        img(src='#{blogger.photo}' title='#{blogger.nickname}')
+                .user-relation
+                    span(ng-bind='count.follows')
+                    span(ng-bind='count.fans')
+                    span.font-bold 关注
+                    span.font-bold 粉丝
+            .user-info-right.pull-right
+                h3.user-name.font-bold #{blogger.nickname}
+                ul.navbar-inline
+                    if !blogger.industry
+                        li: span.font-warn 未填写行业
+                    else
+                        li #{blogger.industry}
+                    if !blogger.position
+                        li: span.font-warn 未填写职位
+                    else
+                        li #{blogger.position}
+                    if !blogger.name
+                        li: span.font-warn 未填写姓名
+                    else
+                        li #{blogger.name}
+                    li #{blogger.sex}
+                    if !blogger.address
+                        li: span.font-warn 未填写地址
+                    else
+                        li #{blogger.address}
+                    if !blogger.birthday
+                        li: span.font-warn 未填写生日
+                    else
+                        li #{blogger.birthday.toLocaleDateString()}
+                label 个人简介：
+                p.user-profile #{blogger.profile}
+                a.btn.btn-link.pull-right(href='/user/change/password') 修改密码
+        .box-border.tab-wrapper
+            ul.nav.nav-tabs(role='tablist')
+                li.active(role='presentation')
+                    a(href='#blog' aria-controls='blog' role='tab' data-toggle='tab' ng-click='watchSwitch("blog")') 我的博客
+                li(role='presentation')
+                    a(href='#collections' aria-controls='collections' role='tab' data-toggle='tab' ng-click='watchSwitch("collection")') 我的收藏
+                li(role='presentation')
+                    a(href='#follows' aria-controls='follows' role='tab' data-toggle='tab' ng-click='watchSwitch("follow")') 我的关注
+                li(role='presentation')
+                    a(href='#fans' aria-controls='fans' role='tab' data-toggle='tab' ng-click='watchSwitch("fans")') 我的粉丝
+            .tab-content
+                //我的博客
+                .tab-pane.clearfix.active#blog(role='tabpanel')
+                    .clearfix
+                        a(href='/user/blogging/new').btn.btn-success.btn-sm.pull-right.icon-margin 写新文章
+                        a(href='/user/blogmanager').btn.btn-warning.btn-sm.pull-right.icon-margin 文章管理
+                    .list-empty(ng-hide='blogs.length > 0')
+                        i.fa.fa-list
+                        | 暂无文章
+                    ul.blog-list(ng-show='blogs.length > 0')
+                        li(ng-repeat='blog in blogs')
+                            .blog-title
+                                a(href='/post/{{blog.id}}' ng-bind='blog.title')
+                                i.font-ignore(ng-if='!blog.visible') [私密]
+                            p.blog-published(ng-bind='blog.published | formatDate')
+                            span.pull-right
+                                a.arrow(href='/user/blogging/{{blog.id}}') 前往编辑
+                                //| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                //a.font-warn.arrow(confirm ='{{blog._id}}' confirm-opt='deleteOpt') 删除
+                    pagination.tab-pane-footer(page-option='blogOption')
+                //我的收藏
+                .tab-pane.clearfix#collections(role='tabpanel')
+                    .list-empty(ng-hide = 'collections.length > 0')
+                        i.fa.fa-list
+                        |   暂无收藏
+                    ul.blog-list(ng-show='collections.length > 0')
+                        li(ng-repeat = 'blog in collections')
+                            .blog-title: a(href='/post/{{blog.id}}' ng-bind='blog.title')
+                            p.blog-published(ng-bind='blog.published | formatDate')
+                            span.pull-right: a.font-warn.arrow(confirm ='{{blog._id}}' confirm-opt='cancelColl') 取消收藏
+                    pagination.tab-pane-footer(page-option='collectionOption')
+                //我的关注
+                .tab-pane.clearfix#follows(role='tabpanel')
+                    .list-empty(ng-hide='follows.length > 0')
+                        i.fa.fa-list
+                        |  暂无关注
+                    ul.clearfix(ng-show='follows.length > 0')
+                        li.blogger-block.clearfix(ng-repeat='(index,item) in follows')
+                            .author-photo.pull-left: img.img-circle(ng-src='{{item.photo}}')
+                            .author-name.pull-right.text-center
+                                h4.one-line: a(href='/blog/{{item.id}}' title='{{item.nickname}}' ng-bind='item.nickname')
+                                a.btn.btn-danger.btn-xs(ng-click='cancelFocus(index)') 取消关注
+                    pagination(page-option='followOption')
+                //我的粉丝
+                .tab-pane.clearfix#fans(role='tabpanel')
+                    .list-empty(ng-hide='fans.length > 0')
+                        i.fa.fa-list
+                        |  暂无粉丝
+                    ul.clearfix(ng-show='fans.length > 0')
+                        li.blogger-block.clearfix(ng-repeat='item in fans')
+                            .author-photo.pull-left: img.img-circle(ng-src='{{item.photo}}')
+                            .author-name.pull-right.text-center
+                                h4.one-line: a(href='/blog/{{item.id}}' title='{{item.nickname}}' ng-bind='item.nickname')
+                                a.btn.btn-primary.btn-xs(href='/blog/{{item.id}}') 查看
+                    pagination(page-option='fansOption')
+
+    //修改头像弹框
+    .modal.fade#avatar-modal(aria-hidden="true" aria-labelledby="avatar-modal-label" role="dialog" tabindex="-1")
+        .modal-dialog.modal-lg
+            .modal-content
+                form.avatar-form(action="/user/photo/change" enctype="multipart/form-data" method="post")
+                    .modal-header
+                        button.close(data-dismiss='modal' type='button') &times;
+                        h4.modal-title#avatar-modal-label 修改头像
+                    .modal-body
+                        .avatar-body
+                            .avatar-upload
+                                input.avatar-src(name="avatar_src" type="hidden")
+                                //input.avatar-data(name="avatar_data" type="hidden")
+                                label(for="avatarInput") 图片上传
+                                input.avatar-input#avatarInput(name="avatar_file" type="file")
+                            .row
+                                .col-md-9
+                                    .avatar-wrapper
+                                .col-md-3
+                                    .avatar-preview.preview-lg
+                                    .avatar-preview.preview-md
+                                    .avatar-preview.preview-sm
+                            .row.avatar-btns
+                                .col-md-9
+                                    .btn-group
+                                        button.btn(data-method="rotate" data-option="-90" type="button" title="向左旋转90°")
+                                            i.fa.fa-rotate-left
+                                            | 向左转
+                                    .btn-group
+                                        button.btn(data-method="rotate" data-option="90" type="button" title="向右旋转90°")
+                                            i.fa.fa-rotate-right
+                                            | 向右转
+                                .col-md-3
+                                    button.btn.btn-success.btn-block.avatar-save(type="submit")
+                                        i.fa.fa-save
+                                        |  保存修改
+
+    include ../footer

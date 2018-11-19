@@ -1,0 +1,26 @@
+extends ../layout
+
+block content
+
+    .content-wrap.clearfix(ng-style="style(0)" resize)
+        a(href='/' title='主页'): img(src='/images/login.jpg').login-img.pull-left
+        form.login-form.pull-right.box-border(ng-controller='SignInCtrl' name='SignInForm' ng-submit='SignIn()')
+            h3.form-heading 账号登录
+            .form-group
+                input.form-control(placeholder='输入邮箱' name='email' ng-model='userdata.email')
+            .form-group
+                input.form-control(placeholder='输入密码' type='password' name='password' ng-model='userdata.password')
+                if msg
+                    span.text-success #{msg}
+                if error
+                    span.warn-msg.font-warn #{error}
+            .form-group
+                input(type='checkbox')
+                label &nbsp;下次自动登录
+                a(href='/forgotpassword').pull-right 忘记密码
+            .form-group
+                button(type='submit').btn.btn-danger.form-control 登&nbsp;录
+            .form-group
+                span 还没有账号？
+                a(href='/register') 立即注册
+    include ../footer

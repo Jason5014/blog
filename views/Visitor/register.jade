@@ -1,0 +1,37 @@
+extends ../layout
+
+block content
+
+    .content-wrap.clearfix(ng-style="style(0)" resize)
+        form.box-border.register-form.pull-left(name='signUpForm' ng-controller='SignUpCtrl' ng-submit='SignUp()')
+            h3.form-heading 注册账号
+            .form-group
+                input.form-control(placeholder='邮箱' type='email' name='email' ng-model='userdata.email' required ng-class='{"error": signUpForm.email.$invalid && signUpForm.email.$touched}')
+                span.notes(ng-if='signUpForm.email.$untouched') 请注意邮箱格式
+                span.font-warn(ng-if= 'signUpForm.email.$invalid && signUpForm.email.$touched && !signUpForm.email.$error.required') 邮箱格式不正确
+                span.font-warn(ng-if= 'signUpForm.email.$error.required && signUpForm.email.$touched') 邮箱不为空
+                span.success(ng-if='signUpForm.email.$valid'): i.fa.fa-check
+            .form-group
+                input.form-control(placeholder='密码' type='password' name='password' ng-model='userdata.password' required ng-minlength='6' ng-maxlength='12')
+                span.notes(ng-if='signUpForm.password.$untouched') 密码为6~12个字符
+                span.font-warn(ng-if= '(signUpForm.password.$error.minlength || signUpForm.password.$error.maxlength) && signUpForm.username.$touched') 请输入6~12个字符
+                span.font-warn(ng-if= 'signUpForm.password.$error.required && signUpForm.password.$touched') 密码不为空
+                span.success(ng-if='signUpForm.password.$valid'): i.fa.fa-check
+            .form-group
+                input.form-control(placeholder='确认密码' type='password' name='password2' ng-model='userdata.password2' required compare='userdata.password')
+                span.notes(ng-if='signUpForm.password2.$untouched') 确认密码一致
+                span.font-warn(ng-if='signUpForm.password2.$error.compare && signUpForm.password2.$touched') 密码不一致
+                span.fong-warn(ng-if='signUpForm.password2.$error.required && signUpForm.password2.$touched') 密码不为空
+                span.success(ng-if='signUpForm.password2.$valid && signUpForm.password2.$touched'): i.fa.fa-check
+            .form-group
+                input.form-control.invalid-input(placeholder='验证码' name='validateCode' ng-model='userdata.validateCode' required)
+                a(title='看不清，换一张?' ng-click='changeValidateCode()'): img#vCodeImg(src='/getValidateCode?t=' + Date.now()).invalid-img
+            .form-group
+                button.btn.btn-danger.register-submit(type='submit', ng-disabled='signUpForm.$invalid') 注&nbsp;册
+                button.btn.btn-default.register-reset(type='reset', ng-disabled='signUpForm.$untouched') 重&nbsp;置
+            .form-grouper
+                span 已经注册了？
+                a(href='/login') 前往登录
+        a(href='/' title='主页'): img.register-img.pull-right(src='/images/register.jpg')
+
+    include ../footer

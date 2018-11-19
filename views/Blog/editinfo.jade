@@ -1,0 +1,58 @@
+extends ../layout
+
+block append links
+    link(rel='stylesheet' href='/plugins/schedule/schedule.css')
+    link(rel='stylesheet' href='/plugins/city-picker/css/city-picker.css')
+block append scripts
+    script(type='text/javascript' src='/plugins/schedule/schedule.js')
+    script(type='text/javascript' src='/plugins/city-picker/js/city-picker.data.js')
+    script(type='text/javascript' src='/plugins/city-picker/js/city-picker.js')
+    script(type='text/javascript' src='/js/app.user.js')
+block content
+    .container
+        form.edit-info-form( ng-controller='EditInfoCtrl' ng-submit='submit()')
+            div.form-group
+                label 昵称
+                input.form-control(type='text' placeholder='昵称' ng-model='blogger.nickname')
+                label 实名
+                input.form-control(type='text' placeholder='姓名' ng-model='blogger.name')
+            div.form-group
+                label 生日
+                div.position-r
+                    input.form-control#birthday(type='text' placeholder='1996-01-01' ng-model='blogger.birthday' readonly ng-blur='hideSchedule()')
+                    i.glyphicon.glyphicon-calendar.input-addon(ng-click='showSchedule()')
+                    div.schedule#schedule-box
+                label 性别
+                input(type='radio' name='sex' value='男' ng-model='blogger.sex')
+                span 男
+                input(type='radio' name='sex' value='女' ng-model='blogger.sex')
+                span 女
+                input(type='radio' name='sex' value='保密' ng-model='blogger.sex')
+                span 保密
+            div.form-group
+                label 地区
+                div.position-r
+                    input.form-control#address(type='text' style='width: 430px;' placeholder='江西-南昌' ng-model='blogger.address' readonly data-toggel='city-picker')
+                button.btn.btn-warning(type='button' ng-click='resetAddress()') 重置
+            div.form-group
+                label 行业
+                input.form-control(type='text' placeholder='职位' ng-model='blogger.industry')
+                label 职位
+                input.form-control(type='text' placeholder='职位' ng-model='blogger.position')
+            div.form-group
+                label 邮箱
+                input.form-control(type='text' ng-model='blogger.email' disabled)
+                label 手机
+                input.form-control(type='text' ng-model='blogger.phone')
+            div.form-group
+                label 个人简介
+                textarea.form-control.form-textarea(rows='5' placeholder='写点什么来介绍自己' ng-model='blogger.profile' ng-change='editProfile()')
+                .clearfix
+                    span.pull-right
+                        | 你还可以输入
+                        span.font-warn(ng-bind='length')
+                        |  个字符
+            div.form-group.text-right
+                button(type='submit').btn.btn-success 保存
+                | &nbsp;&nbsp;&nbsp;
+                button(type='button' ng-click='cancel()').btn.btn-default 取消

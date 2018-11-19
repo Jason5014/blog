@@ -1,0 +1,48 @@
+<div ng-controller="BloggerCtrl">
+    <div class="jumbotron">
+        <div class="container clearfix blogger-info">
+            <div class="pull-left">
+                <img class="blogger-photo" ng-src="{{blogger.photo}}" alt="头像" title="{{blogger.nickname}}">
+            </div>
+            <div class="pull-right blogger-detail">
+                <h3>{{blogger.nickname}} <small ng-if="blogger.name" title="姓名">{{blogger.name}}</small></h3>
+                <span ng-if="blogger.sex" title="性别">{{blogger.sex}}</span>
+                <span ng-if="blogger.industry" title="行业">{{blogger.industry}}</span>
+                <span ng-if="blogger.position" title="职位">{{blogger.position}}</span>
+                <span ng-if="blogger.birthday">{{blogger.birthday.substring(0, 10)}}</span>
+                <p class="profile">{{blogger.profile}}</p>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix blogger-block">
+        <div class="pull-left blogger-collection">
+            <h4>收藏夹</h4>
+            <ul>
+                <li ng-repeat="item in blogger.collections">
+                    <a href="/post/{{item.id}}" target="_blank" title="{{item.title}}">{{item.title}}</a>
+                </li>
+            </ul>
+            <div ng-if="blogger.collections.length === 0" class="empty-item">暂无收藏</div>
+        </div>
+        <div class="pull-right blogger-relationship">
+            <h4>粉丝</h4>
+            <ul>
+                <li ng-repeat="item in blogger.fans">
+                    <a href="/blog/{{item.id}}" target="_blank" title="{{item.nickname}}">
+                        <img ng-src="{{item.photo}}" alt="{{item.nickname}}">
+                    </a>
+                </li>
+            </ul>
+            <div ng-if="blogger.fans.length === 0" class="empty-item">暂无粉丝</div>
+            <h4>关注</h4>
+            <ul>
+                <li ng-repeat="item in blogger.follows">
+                    <a href="/blog/{{item.id}}" target="_blank" title="{{item.nickname}}">
+                        <img ng-src="{{item.photo}}" alt="{{item.nickname}}">
+                    </a>
+                </li>
+            </ul>
+            <div ng-if="blogger.follows.length === 0" class="empty-item">暂无关注</div>
+        </div>
+    </div>
+</div>

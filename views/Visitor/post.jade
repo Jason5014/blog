@@ -1,0 +1,150 @@
+extends ../layout
+block content
+    include ../header
+    .content-wrap.clearfix(ng-controller='PostCtrl')
+        .main-content.pull-left
+            input#blog-id(type='hidden' blog='#{blog.id}' blog-id='#{blog._id}')
+            if user && user.id !== blog.blogger.id
+                .blog-operations.pull-right
+                    if !praised
+                        a.blog-like.arrow#praise(ng-click='praise()'): i.fa.fa-heart-o(title='赞' data-toggle='tooltip' data-placement='top')
+                    else
+                        a.blog-like.arrow#praise(ng-click='praised()'): i.fa.fa-heart(title='取消' data-toggle='tooltip' data-placement='top')
+                    if !collected
+                        a.blog-marker.arrow#collect(ng-click='collect()'): i.fa.fa-bookmark-o(title='收藏' data-toggle='tooltip' data-placement='top')
+                    else
+                        a.blog-marker.arrow#collect(ng-click='collected()'): i.fa.fa-bookmark(title='取消' data-toggle='tooltip' data-placement='top')
+                    //- a.blog-report(href='#'): i.fa.fa-exclamation-triangle(title='举报' data-toggle='tooltip' data-placement='top' )
+            .blog-header
+                h3.blog-title #{blog.title}
+                .blog-tags
+                    if blog.labels.length > 0
+                        span 标签：
+                        each item in blog.labels
+                            a(href='/search?q=#{item}' title='#{item}') #{item}
+                .blog-info.clearfix.font-ignore
+                    span.pull-left: a.font-ignore(href='/?category=#{blog.category}' title='#{blog.category}') #{blog.category}
+                    span.pull-left #{blog.published.toLocaleString()}
+                    span.pull-right.arrow(title='评论')
+                        i.fa.fa-commenting
+                        span(ng-bind='commentsCount')
+                    span.pull-right.arrow(title='访问量')
+                        i.fa.fa-eye
+                        span #{blog.reading}
+            .blog-content(ng-bind-html='content | to_trusted' markdown) #{blog.content}
+            //.self-comments.box-border.clearfix
+            //    a.pull-left(href='#'): img(src='/images/photo.jpg')
+            //    form.comment-form-inline.form-horizontal.pull-right
+            //        input.form-control(placeholder='说点什么吧')
+            if user
+                if blog.reviewable
+                    .self-comments.box-border.clearfix
+                        a.pull-left(href='/blog/#{user.id}'): img(src='#{user.photo}')
+                        form.comment-form.form-horizontal.pull-right
+                            textarea#comment-textarea.form-control(rows=5 placeholder='发表你的评论' ng-model='comment' ng-change='commentChange()')
+                            span.icon-margin
+                                | 还能输入
+                                span#lettle-count.font-warn(ng-bind='length')
+                                | 个字符
+                            button.btn.btn-success(ng-click='publish("#{blog._id}", "#{blog.blogger._id}")') 发表评论
+                else
+                    .self-comments.box-border.box-disabled
+                        h3(style='color: #999;')
+                            i.fa.fa-ban
+                            |  禁止评论
+            else
+                .self-comments.box-border.box-disabled
+                    img(src='/images/photo.jpg')
+                    |  目前您尚未登录， 请
+                    a(href='/login').font-notice 登录
+                    | 或
+                    a(href='/register').font-notice 注册
+                    | 后进行评论
+            .blog-comments
+                .list-empty(ng-hide='comments.length > 0')
+                    h3 暂无评论
+                div(ng-show='comments.length > 0')
+                    .comment-item.clearfix(ng-repeat='(index,item) in comments')
+                        .comment-author.pull-left
+                            img.img-circle(ng-src='{{item.group[0].publisher.photo}}' title='{{item.group[0].publisher.nickname}}')
+                        .comment-detail.pull-right
+                            span.comment-time.pull-right(ng-bind='item.group[0].published | formatDate')
+                            a.arrow.icon-margin.font-notice(ng-if='item.count > 1' ng-bind='"查看回复("+ (item.count - 1) +")"' ng-click='showReply(index)').pull-right
+                            a.font-bold(href='/blog/{{item.group[0].publisher.id}}' title='{{item.group[0].publisher.nickname}}' ng-bind='item.group[0].publisher.nickname')
+                            .comment-content(ng-bind='item.group[0].content')
+                            .clearfix: a.pull-right.arrow(ng-click='reply(index, -1)') 回复
+                            .comment-group(ng-if='item.count > 1 && item.show')
+                                .comment-item.clearfix(ng-repeat='(i, c) in item.group.slice(1)')
+                                    .comment-author.pull-left
+                                        img.img-circle(ng-src='{{c.publisher.photo}}' title='{{c.publisher.nickname}}')
+                                    .comment-detail.pull-right
+                                        span.comment-time.pull-right(ng-bind='c.published | formatDate')
+                                        a.font-bold(href='/blog/{{c.publisher.id}}' title='{{c.publisher.nickname}}' ng-bind='c.publisher.nickname')
+                                        span  回复：
+                                        a.font-ignore(href='/blog/{{c.blogger.id}}' title='{{c.blogger.nickname}}' ng-bind='c.blogger.nickname')
+                                        .comment-content(ng-bind='c.content.trim()')
+                                        a.pull-right.arrow(ng-click='reply(index, i)') 回复
+                    pagination( page-option='commentOption' )
+        .side-bar.pull-right
+            .box-border
+                input#blogger(type='hidden' blogger='#{blog.blogger._id}')
+                .author-photo.pull-left
+                    a(href='/blog/#{blog.blogger.id}' title='#{blog.blogger.nickname}')
+                        img(src='#{blog.blogger.photo}' title='#{blog.blogger.nickname}').img-circle
+                .author-name.pull-right
+                    h4
+                        a(href='/blog/#{blog.blogger.id}' title='#{blog.blogger.nickname}') #{blog.blogger.nickname}
+                    a.btn.btn-success.btn-xs(href='' title='关注' focus='#{blog.blogger._id}')
+                        i.fa.fa-plus.icon-margin
+                        | 关注
+                .clearfix
+                ul.tag-inline
+                    li
+                        span 文章
+                        span #{newBlogs.length}
+                    li
+                        span 粉丝
+                        span #{blog.blogger.fans.length}
+                    li
+                        span 关注
+                        span #{blog.blogger.follows.length}
+            .box-border
+                h5
+                    span.font-bold 他最近的文章
+                    a(href='/blog/#{blog.blogger.id}' title='更多文章').pull-right 更多文章
+                ul
+                    each item in newBlogs.slice(0, 3)
+                        li
+                            p.list-style: a(href='/post/#{item.id}' title='#{item.title}') #{item.title}
+
+            .panel.panel-default
+                .panel-heading
+                    i.fa.fa-leaf
+                    |  热文推荐
+                .panel-body
+                    ul.side-list
+                        each blog in blogs
+                            li
+                                p.list-title: a(href='/post/#{blog.id}', title='#{blog.title}') #{blog.title}
+                                p.hits
+                                    i.fa.fa-eye.icon-margin
+                                    span #{blog.reading}
+            .panel.panel-default
+                .panel-heading
+                    i.fa.fa-group
+                    |  联系方式
+                .panel-body
+                    ul.side-list
+                        //li(title='官方博客')
+                        //    a(href='#') 官方博客
+                        li
+                            i.fa.fa-envelope.icon-margin
+                            span(title='邮箱') 15870608093@163.com
+                        li
+                            i.fa.fa-phone-square.icon-margin
+                            span(title='电话') 15870608093
+                        li
+                            i.fa.fa-qq.icon-margin
+                            span(title='QQ') 1696732332
+    include ../fix-bar
+    include ../footer

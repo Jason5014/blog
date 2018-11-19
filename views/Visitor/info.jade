@@ -1,0 +1,190 @@
+extends ../layout
+
+block content
+    include ../header
+    case info
+        when 'register-success'
+            .content-wrap.box-border.info-box.clearfix(ng-style="style()" resize)
+                .info-content.pull-left
+                    h4.info-heading.text-success
+                        | 注册成功 &nbsp;
+                        i.fa.fa-check
+                    dl.suggest-wrap
+                        dd  我们已经发送激活邮件至#{email},
+                        dd  请在24小时内前往邮箱激活。
+                a.arrow(href='/login' title='去往主页'): img(src='/images/register-success.jpg').info-img.pull-right
+
+        when 'checkout-success'
+            .content-wrap.box-border.info-box.clearfix(ng-style="style()" resize)
+                .info-content.pull-left
+                    h4.info-heading.text-success
+                        | 激活成功 &nbsp;
+                        i.fa.fa-check
+                    dl.suggest-wrap
+                        dd  恭喜你已经成为了博客的一员
+                        dd
+                            | 赶快
+                            a.text-success(href='/login' title='前往登录') 前往登录
+                            | ，开启你的博客之旅吧
+                a.arrow(href='/login' title='去往主页'): img(src='/images/register-success.jpg').info-img.pull-right
+
+        when 'post-publish-success'
+            .content-wrap.box-border.info-box.clearfix(ng-style="style()" resize)
+                .info-content.pull-left
+                    h4.info-heading.text-success
+                        | 发布成功 &nbsp;
+                        i.fa.fa-check
+                    dl.suggest-wrap
+                        dt.suggest-title 您接下来可以：
+                        dd
+                            | 1.
+                            a.text-primary(href='/user/blogging/new' title='再写一篇') 再写一篇
+                            | ，向着大牛迈进
+                        dd
+                            | 2.
+                            a.text-warning(href='/user/blogmanager' title='前往管理文章') 管理文章
+                            | ，让您的文章更有条理
+                        dd
+                            | 3.
+                            a.text-danger(href='/post/#{id}' title='前往主页') 查看文章
+                            | ，看看效果如何
+                a.arrow(href='/login' title='去往主页'): img(src='/images/post-publish-success.jpg').info-img.pull-right
+
+        when 'post-save-success'
+            .content-wrap.box-border.info-box.clearfix(ng-style="style()" resize)
+                .info-content.pull-left
+                    h4.info-heading.text-success
+                        | 保存成功 &nbsp;
+                        i.fa.fa-check
+                    dl.suggest-wrap
+                        dd 文章已经成功保存到您的草稿箱中
+                        dt.suggest-title 您接下来可以：
+                        dd
+                            | 1.
+                            a.text-primary(href='/user/blogging/new' title='再写一篇') 再写一篇
+                            | ，向着大牛迈进
+                        dd
+                            | 2.
+                            a.text-warning(href='/user/blogmanager' title='前往管理文章') 管理文章
+                            | ，让您的文章更有条理
+                a.arrow(href='/login' title='去往主页'): img(src='/images/post-save-success.jpg').info-img.pull-right
+
+        when 'post-edit-success'
+            .content-wrap.box-border.info-box.clearfix(ng-style="style()" resize)
+                .info-content.pull-left
+                    h4.info-heading.text-success
+                        | 修改成功 &nbsp;
+                        i.fa.fa-check
+                    dl.suggest-wrap
+                        dt.suggest-title 您接下来可以：
+                        dd
+                            | 1.
+                            a.text-primary(href='/user/blogging/new' title='再写一篇') 再写一篇
+                            | ，向着大牛迈进
+                        dd
+                            | 2.
+                            a.text-warning(href='/user/blogmanager' title='前往管理文章') 管理文章
+                            | ，让您的文章更有条理
+                        dd
+                            | 3.
+                            a.text-success(href='/post/#{id}' title='查看文章') 查看文章
+                            | ，看看效果如何
+                a.arrow(href='/login' title='去往主页'): img(src='/images/post-edit-success.jpg').info-img.pull-right
+
+        when 'post-not-found'
+            .content-wrap.box-border.info-box.clearfix(ng-style="style()" resize)
+                .info-content.pull-left
+                    h4.info-heading.text-danger
+                        | 文章无法找到 &nbsp;
+                        i.fa.fa-question
+                    dl.suggest-wrap
+                        dt.suggest-title 可能原因
+                        dd 1.作者已经删除该文章
+                        dd 2.文章已被该作者隐藏
+                    dl
+                        dd
+                            | 您可以
+                            a.text-primary(href='/' title='前往主页') 前往主页
+                            |，浏览更多文章
+                a.arrow(href='/login' title='去往主页'): img(src='/images/post-not-found.jpg').info-img.pull-right
+
+        when 'blog-not-found'
+            .content-wrap.box-border.info-box.clearfix(ng-style="style()" resize)
+                .info-content.pull-left
+                    h4.info-heading.text-danger
+                        | 博主无法找到 &nbsp;
+                        i.fa.fa-question
+                    dl.suggest-wrap
+                        dt.suggest-title 可能原因
+                        dd 1.作者已被注销
+                        dd 2.该作者已被隐藏
+                    dl
+                        dd
+                            | 您可以
+                            a.text-primary(href='/' title='前往主页') 前往主页
+                            | ，浏览其他博主
+                a.arrow(href='/login' title='去往主页'): img.arrow(src='/images/blog-not-found.jpg').info-img.pull-right
+        when 'system-error'
+        when 'page-not-found'
+            .content-wrap.box-border.info-box.clearfix(ng-style="style()" resize)
+                .info-content.pull-left
+                    h4.info-heading.text-danger
+                        | 404 - 页面无法找到 &nbsp;
+                        i.fa.fa-question
+                    dl.suggest-wrap
+                        dt.suggest-title 可能原因
+                        dd 1.页面不存在
+                        dd 2.请求路径错误
+                    dl
+                        dd
+                            | 您可以
+                            a.text-primary(href='/' title='前往主页') 前往主页
+                            | ，浏览其他页面
+                a.arrow(href='/login' title='去往主页'): img(src='/images/404.jpg').info-img.pull-right
+
+        when 'feedback-success'
+            .content-wrap.box-border.info-box.clearfix(ng-style="style()" resize)
+                .info-content.pull-left
+                    h4.info-heading.text-success
+                        | 反馈成功 &nbsp;
+                        i.fa.fa-check
+                    dl.suggest-wrap
+                        dd.
+                            谢谢您宝贵的建议和意见，我们会
+                            努力做得更好，再次感谢您对我们
+                            的支持。
+                        dd
+                            a.text-primary(href='/' title='前往主页') 去往主页
+                            | 浏览一下，最新的文章吧
+                a.arrow(href='/login' title='去往主页'): img(src='/images/feedback-success.jpg').info-img.pull-right
+
+        when 'suggest-success'
+            .content-wrap.box-border.info-box.clearfix(ng-style="style()" resize)
+                .info-content.pull-left
+                    h4.info-heading.text-success
+                        | 举报成功 &nbsp;
+                        i.fa.fa-check
+                    dl.suggest-wrap
+                        dd.
+                            谢谢您的检举，我们一定会认真审核，
+                            确保我们有一个美好和谐的博客世界。
+                        dd
+                            a.text-primary(href='/' title='前往主页') 去往主页
+                            | 浏览一下，最新的文章吧
+                a.arrow(href='/login' title='去往主页'): img(src='/images/feedback-success.jpg').info-img.pull-right
+        default
+            .content-wrap.box-border.info-box.clearfix(ng-style="style(50)" resize)
+                .info-content.pull-left
+                    h4.info-heading.text-success
+                        | 其他消息 &nbsp;
+                        i.fa.fa-check
+                    dl.suggest-wrap
+                        dd.
+                            出现了一些未可知的错误，我们会及时处理，敬请见谅！
+                        dd
+                            | 您可以
+                            a.text-primary(href='/' title='前往主页') 去往主页
+                            | 浏览一下，最新的文章吧
+                a.arrow(href='/login' title='去往主页'): img(src='/images/feedback-success.jpg').info-img.pull-right
+
+    include ../footer

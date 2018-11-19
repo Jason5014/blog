@@ -1,0 +1,72 @@
+extends ../layout
+block content
+    include ../header
+    .content-wrap.clearfix(ng-controller='SearchCtrl' resize ng-style='style(80, true)')
+        .pull-left
+            input.form-control.search-input(type='text' name='q' ng-model='query')
+            button.btn.btn-primary.btn-sm(ng-click='search()') 搜一搜
+            .panel.panel-default.search-result.main-content
+                .panel-heading
+                    span.font-warn(ng-bind='watch.query+" - 搜索结果"')
+                .panel-body
+                    .border-box.list-empty( ng-hide = 'blogs.length > 0' )
+                        h4 搜索结果为空
+                    .blog-list( ng-if = 'blogs.length > 0' )
+                        .blog-item.clearfix(ng-repeat='blog in blogs')
+                            .blog-title: h4: a.one-line(href='/post/{{blog.id}}' ng-bind='blog.title')
+                            .blog-profile(ng-bind='blog.content')
+                            a.arrow.pull-right(href='/post/{{blog.id}}' title='查看全文')  查看全文
+                            .blog-nature
+                                span(ng-bind='blog.category')
+                                span.pull-right
+                                    i.fa.fa-eye.icon-margin
+                                    | {{blog.reading}}
+                                span.pull-right(ng-bind='blog.published | formatDate')
+                pagination.panel-footer(page-option='option')
+            input.form-control.search-input(type='text' name='q' ng-model='query')
+            button.btn.btn-primary.btn-sm(ng-click='search()') 搜一搜
+        .side-bar.pull-right
+            if blogger
+                .box-border
+                    .author-photo.pull-left
+                        a(href='/blog/#{blogger.id}' title='#{blogger.nickname}')
+                            img(src='#{blogger.photo}' title='#{blogger.nickname}').img-circle
+                    .author-name.pull-right
+                        h4
+                            a(href='/blog/#{blogger.id}' title='#{blogger.nickname}') #{blogger.nickname}
+                        a.btn.btn-success.btn-xs(href='' title='关注' focus='#{blogger._id}')
+                            i.fa.fa-plus.icon-margin
+                            | 关注
+                    .clearfix
+                    ul.tag-inline
+                        li
+                            span 文章
+                            span #{newBlogs.length}
+                        li
+                            span 粉丝
+                            span #{blogger.fans.length}
+                        li
+                            span 关注
+                            span #{blogger.follows.length}
+                .box-border
+                    h5
+                        span.font-bold 他最近的文章
+                        a(href='/blog/#{blogger.id}' title='更多文章').pull-right 更多文章
+                    ul
+                        each item in newBlogs.slice(0, 3)
+                            li
+                                p.list-style: a(href='/post/#{item.id}' title='#{item.title}') #{item.title}
+            .panel.panel-default
+                .panel-heading
+                    i.fa.fa-leaf
+                    |  热文推荐
+                .panel-body
+                    ul.side-list
+                        each blog in blogs
+                            li
+                                p.list-title: a(href='/post/#{blog.id}' title='#{blog.title}') #{blog.title}
+                                p.hits
+                                    i.fa.fa-eye.icon-margin
+                                    span #{blog.reading}
+    include ../fix-bar
+    include ../footer

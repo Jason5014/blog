@@ -1,0 +1,101 @@
+extends ../layout
+
+block content
+    include ../header
+    .content-wrap.flex-box(resize ng-style='style(80, true)')
+        .ranking-box
+            .ranking-heading
+                h4.text-center 博主文章排行榜
+            .ranking-body
+                if blog.length === 0
+                    .list-empty
+                        h5 暂无博主
+                ul.ranking-list
+                    each item,index in blog
+                        li
+                            span.ranking-index #{index + 1}
+                            p.list-title: a(href='/blog/#{item._id.id}' title='#{item._id.nickname}') #{item._id.nickname.length > 12 ? item._id.nickname.substring(0, 12) + '...' : item._id.nickname}
+                            div.text-right.text-inline
+                                i.fa.fa-book
+                                span  #{item.count}
+        .ranking-box
+            .ranking-heading
+                h4.text-center 博主粉丝排行榜
+            .ranking-body
+                if fans.length === 0
+                    .list-empty
+                        h5 暂无博主
+                ul.ranking-list
+                    each item,index in fans
+                        li
+                            span.ranking-index #{index+1}
+                            p.list-title: a(href='/blog/#{item.id}' title='#{item.nickname}') #{item.nickname.length > 12 ? item.nickname.substring(0, 12) + '...' : item.nickname}
+                            div.text-right.text-inline
+                                i.fa.fa-user
+                                span  #{item.count >= 1000 ? Math.floor(item.count / 1000) + 'K' : item.count}
+        .ranking-box
+            .ranking-heading
+                h4.text-center 博主评论排行榜
+            .ranking-body
+                if review.length === 0
+                    .list-empty
+                        h5 暂无博主
+                ul.ranking-list
+                    each item,index in review
+                        li
+                            span.ranking-index #{index+1}
+                            p.list-title: a(href='/blog/#{item.id}' title='#{item.nickname}') #{item.nickname}
+                            div.text-right.text-inline
+                                i.fa.fa-commenting
+                                span  #{item.comments}
+        hr
+        .ranking-box
+            .ranking-heading
+                h4.text-center 文章阅读排行榜
+            .ranking-body
+                if reading.length === 0
+                    .list-empty
+                        h5 暂无文章
+                ul.ranking-list
+                    each item,index in reading
+                        li
+                            span.ranking-index #{index+1}
+                            p.list-title: a(href='/post/#{item.id}' title='#{item.title}') #{item.title.length > 13 ? item.title.substring(0, 13) + '...' : item.title}
+                            div.text-right.text-inline
+                            div.text-right.text-inline
+                                i.fa.fa-eye
+                                span  #{item.reading >= 1000 ? Math.floor(item.reading / 1000) + 'K' : item.reading}
+        .ranking-box
+            .ranking-heading
+                h4.text-center 文章获赞排行榜
+            .ranking-body
+                if praise.length === 0
+                    .list-empty
+                        h5 暂无文章
+                ul.ranking-list
+                    each item,index in praise
+                        li
+                            span.ranking-index #{index+1}
+                            p.list-title: a(href='/post/#{item.id}' title='#{item.title}') #{item.title.length > 15 ? item.title.substring(0, 15) + '...' : item.title}
+                            div.text-right.text-inline
+                                i.fa.fa-thumbs-up
+                                span  #{item.praise >= 1000 ? Math.floor(item.praise / 1000) + 'K' : item.praise}
+
+        .ranking-box
+            .ranking-heading
+                h4.text-center 文章收藏排行榜
+            .ranking-body
+                if collect.length === 0
+                    .list-empty
+                        h5 暂无文章
+                ul.ranking-list
+                    each item,index in collect
+                        li
+                            span.ranking-index #{index + 1}
+                            p.list-title: a(href='/post/#{item.id}' title='#{item.title}') #{item.title.length > 15 ? item.title.substring(0, 15) + '...' : item.title}
+                            div.text-right.text-inline
+                                i.fa.fa-star
+                                span  #{item.count >= 1000 ? Math.floor(item.count / 1000) + 'K' : item.count}
+
+    include ../fix-bar
+    include ../footer

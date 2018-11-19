@@ -1,0 +1,169 @@
+extends ../layout
+block append links
+    link(rel='stylesheet' href='/css/tab.css')
+block append scripts
+    script(type='text/javascript' src='/js/app.user.js')
+block content
+    include ../header
+    .content-wrap(ng-controller='BlogManageCtrl' resize ng-style='style(75, true)')
+        .blog-manage-top.clearfix
+            input#blogger(type='hidden' blogger = '#{blogger._id}')
+            .user-photo-wrap.pull-left: img.thumbnail.user-photo(src='#{user.photo}')
+            .user-info.pull-right
+                a.btn.btn-danger.pull-right(href='/user/blogging/new') 写新博客
+                h4.font-bold #{user.nickname}
+                a.font-ignore(href='/user/userinfo', title='个人主页') 个人主页
+                a.font-warn(href='/blog/#{user.id}', title='#{user.nickname}的博客') 我的博客
+        .box-border.tab-wrapper
+            ul.nav.nav-tabs(role='tablist')
+                li.active(role='presentation')
+                    a(href='#blog' aria-controls='blog' role='tab' data-toggle='tab' ng-click='watchSwitch("blog")') 文章管理
+                li(role='presentation')
+                    a(href='#customCategory' aria-controls='customCategory' role='tab' data-toggle='tab' ng-click='watchSwitch("customCategory")') 类别管理
+                li(role='presentation')
+                    a(href='#comments' aria-controls='comments' role='tab' data-toggle='tab' ng-click='watchSwitch("comments")') 评论管理
+                li(role='presentation')
+                    a(href='#drafts' aria-controls='drafts' role='tab' data-toggle='tab' ng-click='watchSwitch("drafts")') 草稿箱
+                li(role='presentation')
+                    a(href='#recycle' aria-controls='recycle' role='tab' data-toggle='tab' ng-click='watchSwitch("recycle")') 回收站
+                li(role='presentation')
+                    a(href='#collections' aria-controls='collections' role='tab' data-toggle='tab' ng-click='watchSwitch("collection")') 收藏夹
+            .tab-content
+                //文章管理面板
+                .tab-pane.clearfix.active#blog(role='tabpanel')
+                    .select-group
+                        span 类别：
+                        select(ng-model='blogWatch.category')
+                            option(value='全部') 全部
+                            option(ng-repeat='item in categoryList' value='{{item.name}}') {{item.name}}
+                        span 个人分类：
+                        select(ng-model='blogWatch.customCategory')
+                            option(value='全部') 全部
+                            option(ng-repeat='item in customCategoryList' value='{{item._id}}') {{item.name}}
+                    .list-empty(ng-hide='blogs.length > 0')
+                        i.fa.fa-list
+                        | 暂无文章
+                    ul.blog-detail-list(ng-show='blogs.length > 0')
+                        li
+                            span 标题
+                            span 日期
+                            span 状态
+                            span 阅读
+                            span 评论
+                            span 评论权限
+                            span 操作
+                        li(ng-repeat='(index,blog) in blogs')
+                            span
+                                a(href='/post/{{blog.id}}' ng-bind='blog.title')
+                                i.font-ignore(ng-if='!blog.visible') [私密]
+                            span(ng-bind='blog.published | formatDate')
+                            span(ng-bind='blog.status | status' ng-class='blog.status | statusClass')
+                            span(ng-bind='blog.reading')
+                            span(ng-bind='blog.comments')
+                            span.arrow(ng-class='{"font-reported": !blog.reviewable, "font-published": blog.reviewable}' ng-bind='blog.reviewable ? "允许评论" : "禁止评论"' ng-click='blog.reviewable ? setUnreviewable(index) : setReviewable(index)')
+                            span
+                                a.font-unpublished(href='/user/blogging/{{blog.id}}') 编辑
+                                a(ng-bind='blog.visible ? "隐藏" : "显示"' ng-click='blog.visible ? setHide(index) : setShow(index)' title='{{blog.visible ? "隐藏文章" : "显示文章"}}')
+                                a(ng-bind='blog.top > 0 ? "取消" : "置顶"' ng-click='blog.top > 0 ? cancelTop(index) : setTop(index)' title='{{blog.top > 0 ? "取消置顶" : "置顶"}}')
+                                a.font-reported(confirm ='{{blog.id}}' confirm-opt='deleteOpt') 删除
+                    pagination.tab-pane-footer(page-option='blogOption')
+                //类别管理面板
+                .tab-pane.clearfix#customCategory(role='tabpanel')
+                    .clearfix.text-right
+                        input.add-custom-category-input(type='text' placeholder='添加分类' ng-model='newCustomCategoryName' title='添加分类')
+                        button.btn.btn-success.btn-sm(type='button' ng-click='addCustomCategory()') 添加分类
+                    .list-empty(ng-hide='customCategorys.length > 0')
+                        i.fa.fa-list
+                        |  暂无分类
+                    ul.simple-list(ng-show='customCategorys.length > 0')
+                        li
+                            span 分类
+                            span 时间
+                            span
+                            span 操作
+                        li(ng-repeat='(index, item) in customCategorys')
+                            span: input.edit-custom-category-input(type='text' title='修改分类' ng-blur='editCustomCategory(index)' ng-model='customCategorys[index].name')
+                            span(ng-bind='item.published | formatDate')
+                            span
+                            span
+                                a.font-unpublished(href='/blog/#{user.id}?customCategory={{item._id}}') 查看
+                                a.font-reported(ng-click='removeCustomCategory(index)') 删除
+                    pagination.tab-pane-footer(page-option='customCategoryOption')
+                //评论管理面板
+                .tab-pane.clearfix#comments(role='tabpanel')
+                    .comment-btn
+                        span: a(ng-click='switchCommented()' title='我评论的' ng-class='{"active": watchComment.switcher}') 我评论的{{watchComment.switcher ? ' (' + countComment.commented +')' : ''}}
+                        span: a(ng-click='switchComment()' title='评论我的' ng-class='{"active": !watchComment.switcher}') 评论我的{{watchComment.switcher ? '' : ' (' + countComment.comment +')'}}
+                    .list-empty(ng-hide='(watchComment.switcher ? commenteds.length : comments.length) > 0')
+                        i.fa.fa-list
+                        |  暂无评论
+                    ul.simple-list(ng-show='(watchComment.switcher ? commenteds.length : comments.length) > 0')
+                        li
+                            span 内容
+                            span(ng-bind='watchComment.switcher ? "被评论人" : "评论人"')
+                            span 时间
+                            span 操作
+                        li(ng-repeat='item in (watchComment.switcher ? commenteds : comments)')
+                            span: a(href='/post/{{item.blog.id}}' ng-bind='item.content')
+                            span: a(href='/blog/{{watchComment.switcher ? item.blogger.id : item.publisher.id }}' ng-bind='watchComment.switcher ? item.blogger.nickname : item.publisher.nickname')
+                            span(ng-bind='item.published | formatDate')
+                            span: a(href='/post/{{item.blog.id}}') 查看
+                    pagination.tab-pane-footer(page-option='commentOption')
+                //草稿箱面板
+                .tab-pane.clearfix#drafts(role='tabpanel')
+                    .list-empty(ng-hide='drafts.length > 0')
+                        i.fa.fa-list
+                        |  草稿箱为空
+                    ul.simple-list(ng-show='drafts.length > 0')
+                        li
+                            span 标题
+                            span 类别
+                            span 保存时间
+                            span 操作
+                        li(ng-repeat='(index, item) in drafts')
+                            span: a(href='/post/{{item.id}}' ng-bind='item.title')
+                            span(ng-bind='item.category')
+                            span(ng-bind='item.published | formatDate')
+                            span
+                                a.font-unpublished(href='/user/blogging/{{item.id}}') 编辑
+                                a.font-published(href='/user/blogging/{{item.id}}') 发布
+                                a.font-reported(ng-click='deleteBlog(index)') 删除
+                    pagination.tab-pane-footer(page-option='draftsOption')
+                //回收站面板
+                .tab-pane.clearfix#recycle(role='tabpanel')
+                    .list-empty(ng-hide='recycles.length > 0')
+                        i.fa.fa-list
+                        |  回收站为空
+                    ul.simple-list(ng-show='recycles.length > 0')
+                        li
+                            span 标题
+                            span 类别
+                            span 发布时间
+                            span 操作
+                        li(ng-repeat='(index, item) in recycles')
+                            span: a(href='/post/{{item.id}}' ng-bind='item.title')
+                            span(ng-bind='item.category')
+                            span(ng-bind='item.published | formatDate')
+                            span
+                                a.font-unpublished(ng-click='returnBlog(index)') 还原
+                                a.font-reported(ng-click='destroyBlog(index)') 销毁
+                    pagination.tab-pane-footer(page-option='recycleOption')
+                //收藏夹面板
+                .tab-pane.clearfix#collections(role='tabpanel')
+                    .list-empty(ng-hide='collections.length > 0')
+                        i.fa.fa-list
+                        |  暂无收藏
+                    ul.simple-list(ng-show='collections.length > 0')
+                        li
+                            span 标题
+                            span 作者
+                            span 发布时间
+                            span 操作
+                        li(ng-repeat='(index, item) in collections')
+                            span: a(href='/post/{{item.id}}' ng-bind='item.title')
+                            span: a(href='/blog/{{item.blogger.id}}' ng-bind='item.blogger.nickname' title='{{item.blogger.nickname}}')
+                            span(ng-bind='item.published | formatDate')
+                            span
+                                a.font-reported(ng-click='cancelCollection(index)') 取消收藏
+                    pagination.tab-pane-footer(page-option='collectionOption')
+    include ../footer

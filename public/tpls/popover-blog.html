@@ -1,0 +1,21 @@
+
+<div class="box-border">
+    <div class="top">
+        <img ng-src="{{blogger.photo}}" title="{{blogger.nickname}}">
+        <h4 ng-bind="blogger.nickname"></h4>
+        <span ng-if="blogger.industry" ng-bind="blogger.industry"></span>
+        <span ng-if="blogger.position" ng-bind="blogger.position"></span>
+        <span ng-if="blogger.name" ng-bind="blogger.name"></span>
+        <span ng-if="blogger.sex" ng-bind="blogger.sex"></span>
+        <span ng-if="blogger.birthday" ng-bind="blogger.birthday.toLocaleDateString()"></span>
+    </div>
+    <hr>
+    <div class="bottom">
+        <p ng-bind="blogger.profile"></p>
+        <a focus="{{blogger._id}}">
+                <i class="fa fa-plus"></i>
+                &nbsp;关注
+            </a>
+        <a href="/blog/{{blogger.id}}">Ta的博客</a>
+    </div>
+</div>

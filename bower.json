@@ -1,0 +1,28 @@
+{
+  "name": "blog",
+  "version": "0.0.0",
+  "description": "this is a blog system",
+  "authors": [
+    "Jason5014 <1696732332@qq.com>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "blog",
+    "angularjs"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "public/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.6.6",
+    "angular-ui-router": "^1.0.11",
+    "bootstrap": "^3.3.7",
+    "font-awesome": "^4.7.0",
+    "layer": "^3.0.3",
+    "markdown-it": "^8.4.0"
+  }
+}

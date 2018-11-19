@@ -1,0 +1,47 @@
+<div ng-controller="PostCtrl">
+    <div class="jumbotron">
+        <div class="container clearfix post-info">
+            <div class="post-header">
+                <h3>{{post.title}} <small><a ui-sref="app.blogger.detail({id: post.blogger.id})">{{post.blogger.nickname}}</a></small></h3>
+            </div>
+            <span>分类 {{post.category}}</span>
+            <span>获赞 {{post.praise}}</span>
+            <span>阅读 {{post.reading}}</span>
+            <span>发布时间 {{post.published ? post.published.toString().substring(0, 19).replace('T', ' ') : ''}}</span>
+            <ul>
+                <li>个人分类</li>
+                <li ng-repeat="item in post.customCategory">{{item.name}}</li>
+            </ul>
+            <ul>
+                <li>标签</li>
+                <li ng-repeat="item in post.labels">{{item}}</li>
+            </ul>
+        </div>
+    </div>
+    <div class="post-detail clearfix">
+        <div class="pull-left">
+            <h4>评论</h4>
+            <ul class="post-comments">
+                <li ng-repeat="group in comments">
+                    <div class="comment-item" ng-repeat="item in group.group">
+                        <img class="thumb" ng-src="{{item.publisher.photo}}" alt="{{item.publisher.nickname}}">
+                        <a href="/blog/{{item.publisher.id}}" target="_blank" title="{{item.publisher.nickname}}">{{item.publisher.nickname}}</a>
+                        <p>{{item.content}}</p>
+                    </div>
+                </li>
+            </ul>
+            <div ng-if="comments.length === 0" class="empty-item">暂无评论</div>
+        </div>
+        <div class="pull-right post-collections">
+            <h4>收藏者</h4>
+            <ul>
+                <li ng-repeat="item in post.collected">
+                    <a href="/blog/{{item.id}}" target="_blank" title="{{item.nickname}}">
+                        <img ng-src="{{item.photo}}" alt="{{item.nickname}}" class="thumb">
+                    </a>
+                </li>
+            </ul>
+            <div ng-if="post.collected.length === 0" class="empty-item">暂无人收藏</div>
+        </div>
+    </div>
+</div>

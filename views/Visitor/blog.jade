@@ -1,0 +1,126 @@
+extends ../layout
+
+block content
+    include ../header
+    header.blog-background
+    .content-wrap(ng-controller='BloggerCtrl')
+        .author-header
+            .button-group.pull-right
+                a.btn.btn-sm(href='#' ng-click='showAbstract()' ng-class='{"btn-primary": view, "btn-default": !view}') 摘要视图
+                a.btn.btn-sm(href='#' ng-click='showCatalog()' ng-class='{"btn-primary": !view, "btn-default": view}') 目录视图
+                if user && blogger.id === user.id
+                    a.btn.btn-sm.btn-warning(href='/user/blogmanager') 博文管理
+                    a.btn.btn-sm.btn-success(href='/user/blogging/new') 写新文章
+            h3.font-bold #{blogger.nickname}的博客
+            p.author-profile #{blogger.profile}
+        .clearfix
+            .side-bar.pull-left
+                .panel.panel-default
+                    .panel-heading
+                        input#blogger(type='hidden' blogger='#{blogger._id}')
+                        i.fa.fa-sort.icon-margin
+                        | 个人资料
+                    .panel-body.author-info
+                        .author-info-top
+                            a.arrow(href='/bloginfo/#{blogger.id}')
+                                img.img-circle(src='#{blogger.photo}', title='#{blogger.nickname}')
+                            h5 #{blogger.nickname}
+                            a.btn.btn-success.btn-xs(focus='#{blogger._id}' title='关注')
+                                i.fa.fa-plus.icon-margin
+                                | 关注
+                        ul.tag-inline
+                            li
+                                span.font-bold 文章
+                                label(ng-bind='count')
+                            li
+                                span.font-bold 粉丝
+                                label #{blogger.fans.length}
+                            li
+                                span.font-bold 评论
+                                label #{blogger.comments}
+                .panel.panel-default
+                    .panel-heading
+                        i.fa.fa-sort.icon-margin
+                        | 文章搜索
+                    .panel-body
+                        form.form-inline.text-center(action='/search')
+                            input.form-control(placeholder='搜索博主文章' name='q' required)
+                            input(type='hidden' name='id' value='#{blogger._id}')
+                            button.btn.btn-search: i.fa.fa-search(title='搜索')
+                .panel.panel-default
+                    .panel-heading
+                        i.fa.fa-sort.icon-margin
+                        | 文章分类
+                    .panel-body
+                        ul.side-list
+                            if customCategorys.length === 0
+                                li
+                                    span 暂无分类
+                            each item in customCategorys
+                                li
+                                    a.arrow.one-line(ng-click='changeCustomCategory("#{item._id._id}")' title='#{item._id.name}') #{item._id.name}
+                                    span.pull-right #{item.number} 篇
+                .panel.panel-default
+                    .panel-heading
+                        i.fa.fa-sort.icon-margin
+                        | 文章存档
+                    .panel-body
+                        ul.side-list
+                            if archives.length === 0
+                                li
+                                    span 暂无文章
+                            each blog in archives
+                                li
+                                    a.arrow(ng-click='changeArchives("#{blog.published}")' title='#{blog.published.replace("-", "年")+"月"}') #{blog.published.replace('-', '年')+'月'}
+                                    span.pull-right #{blog.count} 篇
+                .panel.panel-default
+                    .panel-heading
+                        i.fa.fa-sort.icon-margin
+                        | 他的热门文章
+                    .panel-body
+                        ul.side-list
+                            if blogs.length === 0
+                                li
+                                    span 暂无文章
+                            each blog in blogs
+                                li.one-line
+                                    a(href='/post/#{blog.id}' title='#{blog.title}') #{blog.title}
+                                    span.pull-right (#{blog.reading})
+            .main-content.pull-right
+                .blog-abstract.panel.panel-default(ng-show='view')
+                    .panel-heading 摘要视图
+                    .panel-body
+                        .border-box.list-empty(ng-hide='blogs.length > 0')
+                            h3.text-center 暂无文章
+                        .clearfix(ng-show='blogs.length > 0')
+                            .blog-item(ng-repeat='blog in blogs')
+                                h5.blog-title
+                                    span.btn.btn-primary.btn-xs.icon-margin 原
+                                    span.font-warn(ng-show='blog.top > 0') [置顶]
+                                    a(href='/post/{{blog.id}}', title='{{blog.title}}' ng-bind='blog.title')
+                                .blog-profile(ng-bind='blog.content')
+                                .clearfix.font-ignore
+                                    span.pull-left(ng-bind='blog.category')
+                                    .blog-data.pull-right
+                                        span(ng-bind='blog.published| formatDate')
+                                        span 阅读 ({{blog.reading}})
+                                        span 评论 ({{blog.comments}})
+                    pagination.panel-footer( page-option = 'option')
+                .blog-catalog.panel.panel-default(ng-hide='view')
+                    .panel-heading
+                        | 目录视图
+                    .panel-body
+                        .border-box.list-empty(ng-hide='blogs.length > 0')
+                            h3.text-center 暂无文章
+                        .clearfix(ng-show='blogs.length > 0')
+                            .blog-item(ng-repeat='blog in blogs')
+                                span.btn.btn-primary.btn-xs.icon-margin 原
+                                span.font-warn(ng-if='blog.top > 0') [置顶]
+                                a(href='/post/{{blog.id}}', title='{{blog.title}}' ng-bind='blog.title')
+                                span.blog-data.pull-right.font-ignore
+                                    span(ng-bind='blog.published | formatDate')
+                                    span 阅读 ({{blog.reading}})
+                                    span 评论 ({{blog.comments}})
+                    pagination.panel-footer( page-option = 'option')
+    include ../fix-bar
+    include ../footer

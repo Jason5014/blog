@@ -1,0 +1,182 @@
+/* dashboard */
+.dashboard{
+    width: 90%;
+    margin: auto;
+    padding: 1em 2em;
+    background-color: #fff;
+}
+.cards{
+
+}
+.card{
+    display: inline-block;
+    padding: .5em 1em;
+    border: 1px solid #ccc;
+    margin: 1em .5em;
+    text-align: center;
+}
+.card span{
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+
+/* blogger detail */
+.blogger-photo{
+    width: 150px;
+}
+.blogger-detail{
+    width: 75%;
+}
+.blogger-detail h3{
+    font-size: 30px;
+}
+.blogger-detail h3 small{
+    color: #ccc;
+    font-size: 15px;
+    font-weight: normal;
+}
+.blogger-detail span{
+    border-right: 2px solid #ccc;
+    padding: 0 1em;
+    color: #999;
+}
+.blogger-detail > span:last-of-type{
+    border-right: none;
+}
+.blogger-detail .profile{
+    margin-top: 0.5em;
+    text-indent: 2em;
+}
+.blogger-block{
+    padding: 0 2em 1em;
+    background: #fff;
+}
+.blogger-block .pull-left,
+.blogger-block .pull-right{
+    width: 45%;
+}
+.blogger-block h4,
+.post-detail h4{
+    font-size: 18px;
+    padding: 1em;
+    border-bottom: 2px solid #ccc;
+}
+.blogger-block h4::before ,
+.post-detail h4::before {
+    display: inline-block;
+    content: '.';
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    border: .55em solid;
+    line-height: 1.1;
+    border-color:transparent transparent transparent #f05050;
+}
+.blogger-collection li{
+    margin: 1em auto;
+    -webkit-transition: .2s ease-out all;
+    -moz-transition: .2s ease-out all;
+    -o-transition: .2s ease-out all;
+    transition: .2s ease-out all;
+}
+.blogger-collection li:hover{
+    text-indent: 1em;
+}
+.blogger-relationship ul{
+    list-style: none;
+    padding-left: 10px;
+}
+.blogger-relationship li{
+    display: inline-block;
+    margin-left: 15px;
+}
+.blogger-relationship li img{
+    width: 60px;
+}
+
+/* post detail */
+.post-header{
+    margin: 0 1em 2em;
+}
+.post-info span{
+    display: inline-block;
+    margin-right: 1em;
+    padding: .3em .6em;
+    border: 1px solid #8d8d8d;
+}
+.post-info ul{
+    margin: 10px 0;
+    padding-left: 0;
+}
+.post-info ul li{
+    display: inline-block;
+    margin-right: 1em;
+    padding: .1em .3em;
+    border: 1px solid;
+}
+.post-info ul li:first-of-type{
+    list-style: none;
+    border: none;
+    font-weight: bold;
+}
+.post-detail{
+    padding: 0 2em 1em;
+    background: #fff;
+}
+.post-detail .pull-left,
+.post-detail .pull-right{
+    width: 45%;
+}
+.post-comments{
+    list-style: none;
+}
+.post-comments .comment-item{
+    padding: .5em;
+}
+.post-collections ul{
+    list-style: none;
+    padding-left: 0;
+}
+.post-collections ul li{
+    display: inline-block;
+}
+
+/* suggest detail */
+.suggest-detail{
+    padding: 1em 3em;
+    background: #fff;
+    width: 85%;
+    margin: 2em auto;
+    box-sizing: border-box;
+}
+.suggest-detail .pull-left{
+    width: 65%;
+}
+.suggest-types{
+    list-style: none;
+    padding-left: 1em;
+    margin: 1em auto;
+}
+.suggest-types li{
+    display: inline-block;
+    margin-right: 1em;
+    padding: .3em .6em;
+    border: 1px solid #8d8d8d;
+}
+.suggest-content{
+    border: 1px solid #ccc;
+    padding: 1em 2em;
+}
+
+.suggest-detail .pull-right{
+    width: 30%;
+    text-align: center;
+}
+
+.empty-item{
+    padding: 1em;
+    text-align: center;
+    font-size: 20px;
+    color: #ccc;
+}

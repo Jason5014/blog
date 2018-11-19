@@ -1,0 +1,25 @@
+doctype html
+html(ng-app='BlogApp')
+  head
+    meta(charset='utf-8')
+    title #{title}
+    block links
+      link(rel='stylesheet' href='/bower_components/bootstrap/dist/css/bootstrap.css')
+      link(rel='stylesheet' href='/bower_components/font-awesome/css/font-awesome.min.css')
+      link(rel='stylesheet' href='/css/style.css')
+    script(type='text/javascript' src='/bower_components/jquery/dist/jquery.min.js')
+    script(type='text/javascript' src='/bower_components/angular/angular.min.js')
+    script(type='text/javascript' src='/bower_components/angular-cookies/angular-cookies.js')
+    script(type='text/javascript' src='/js/configs.js')
+    script(type='text/javascript' src='/js/services.js')
+    script(type='text/javascript' src='/js/directives.js')
+    script(type='text/javascript' src='/js/app.js')
+    script(type='text/javascript' src='/js/filters.js')
+  body(ng-controller='MainCtrl')
+    block content
+    block scripts
+      script(type='text/javascript' src='/bower_components/bootstrap/dist/js/bootstrap.js')
+      script(type='text/javascript' src='/bower_components/layer/src/layer.js')
+
+
+

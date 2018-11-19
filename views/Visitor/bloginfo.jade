@@ -1,0 +1,71 @@
+extends ../layout
+block content
+    include ../header
+    .content-wrap(ng-controller='BlogInfoCtrl' resize ng-style='style(80, true)')
+        .user-info.clearfix.box-border
+            input#blogger(type='hidden' blogger= '#{blogger._id}')
+            .user-info-left.pull-left
+                .user-photo-wrap
+                    div.avatar-view.user-info-photo-container
+                        img(src='#{blogger.photo}' title='#{blogger.nickname}' width='100%')
+                .user-relation
+                    span #{blogger.follows.length}
+                    span #{blogger.fans.length}
+                    span.font-bold 关注
+                    span.font-bold 粉丝
+            .user-info-right.pull-right
+                a.btn.btn-success.btn-sm.pull-right.arrow(focus='#{blogger._id}' title='关注')
+                    i.fa.fa-plus.icon-margin
+                    | 关注
+                h3.user-name.font-bold #{blogger.nickname}
+                ul.navbar-inline
+                    if blogger.industry
+                        li.arrow(title='行业') #{blogger.industry}
+                    if blogger.position
+                        li.arrow(title='职位') #{blogger.position}
+                    if blogger.name
+                        li.arrow(title='姓名') #{blogger.name}
+                    li.arrow(title='性别') #{blogger.sex}
+                    if blogger.address
+                        li.arrow(title='地址') #{blogger.address}
+                    if blogger.birthday
+                        li.arrow(title='生日') #{blogger.birthday.toLocaleDateString()}
+                label 个人简介：
+                p.user-profile #{blogger.profile}
+        .clearfix
+            .main-content.blog-info-blog.border-box.pull-left
+                h4.text-primary 发表的博客
+                .list-empty(ng-hide='blogs.length > 0')
+                    h3.text-center 暂无文章
+                .clearfix(ng-show='blogs.length > 0')
+                    .blog-item(ng-repeat='blog in blogs')
+                        span.btn.btn-primary.btn-xs.icon-margin 原
+                        span.font-warn(ng-if='blog.top > 0') [置顶]
+                        a(href='/post/{{blog.id}}', title='{{blog.title}}' ng-bind='blog.title')
+                        span.blog-data.pull-right.font-ignore
+                            span(ng-bind='blog.published | formatDate')
+                            span 阅读 ({{blog.reading}})
+                            span 评论 ({{blog.comments}})
+                    pagination(page-option='option')
+            .side-bar.blog-relationship.pull-right.font-ignore
+                h4 Ta的关系
+                span 关注 #{blogger.follows.length} 人
+                ul
+                    if blogger.follows.length === 0
+                        li.list-empty
+                            label 暂无关注
+                    each item in blogger.follows.splice(0, 8)
+                        li
+                            a(href='/blog/#{item.id}' title='#{item.nickname}')
+                                img(src='#{item.photo}')
+                span 粉丝 #{blogger.fans.length} 人
+                ul
+                    if blogger.fans.length === 0
+                        li.list-empty
+                            label 暂无粉丝
+                    each item in blogger.fans.splice(0, 8)
+                        li
+                            a(href='/blog/#{item.id}' title='#{item.nickname}')
+                                img(src='#{item.photo}')
+    include ../fix-bar
+    include ../footer
