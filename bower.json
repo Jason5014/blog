@@ -23,6 +23,8 @@
     "bootstrap": "^3.3.7",
     "font-awesome": "^4.7.0",
     "layer": "^3.0.3",
-    "markdown-it": "^8.4.0"
+    "markdown-it": "^8.4.0",
+    "editor.md": "^1.5.0",
+    "cropper": "^4.0.0"
   }
 }
