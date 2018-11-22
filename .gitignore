@@ -4,3 +4,4 @@ public/bower_components
 test
 package-lock.json
 .idea
+config.js

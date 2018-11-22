@@ -4,8 +4,8 @@ module.exports = {
     secret: 'mean-blog-jason',
     salt: '13243543fdaskfjaoifjrit43543',
     pageSize: 10,
-    host: 'localhost',
-    port: 3000,
+    host: '47.107.240.57',
+    port: 80,
     mail: {
         host: 'smtp.163.com',
         secureConnection: true,
